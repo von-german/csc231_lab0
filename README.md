@@ -1,1 +1,1 @@
-# csc231_lab0
+# Basic lexical analyzer for Programming Languages - Lab0
