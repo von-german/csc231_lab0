@@ -1,6 +1,7 @@
 #define BUFF_SIZE 255
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
 
 int main(int argc, char ** argv)
 {
@@ -30,13 +31,34 @@ int main(int argc, char ** argv)
 	
    while(read_buff[count] != EOF)										/* read char one-by-one from input file into read_buff */
    {
-   	count++;
+   	if(isalpha(read_buff[count]))										/* produce token for id */
+   	{	
+   		while(isalpha(read_buff[count]) ||
+   				isdigit(read_buff[count]) ||
+   				read_buff[count] == '_'	)
+	   	{
+	   		count++;
+	   		read_buff[count] = fgetc(ifp);
+	   	}
+
+	   	
+	   	fprintf(stdout, "id ");
+
+	   }
+   	/*switch(read_buff[count])
+   	{
+   		case 
+
+
+
+
+   	}*/
+
+  
    	read_buff[count] = fgetc(ifp);
 	}
 
-	read_buff[count] = '\0';
-   
-   fprintf(stdout, "%s", read_buff);
+	fprintf(stdout, "\n");
 
    return 0;
 }
