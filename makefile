@@ -4,7 +4,7 @@ lexer: main.o
 	gcc main.o -o lexer
 
 main.o: main.c 
-	gcc -c main.c
+	gcc -Wall -pedantic -c main.c
 
 
 clean: 
