@@ -263,6 +263,21 @@ int main(int argc, char ** argv)
 			}
 			break;
 
+			case '*':																	/* case '*' or '**' */
+			count++;
+			read_buff[count] = fgetc(ifp);
+			if(read_buff[count] == '*')
+			{
+				fprintf(stdout, "exponent ");
+			}
+			else
+			{
+				fseek(ifp, -1, SEEK_CUR);
+				count--;
+				fprintf(stdout, "multiply ");
+			}
+			break;
+			
 			case '(':																	/* case '(' */
 			fprintf(stdout, "lparen ");
 			break;
