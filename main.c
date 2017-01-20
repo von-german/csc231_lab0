@@ -99,14 +99,114 @@ int main(int argc, char ** argv)
    	read_buff[count] = fgetc(ifp);
 	}
 
-	/*switch(read_buff[count])
+	switch(read_buff[count])
 	{
-		case '-':
+		case '-':																/* case '_' */
+
+		count++;
+		read_buff[count] = fgetc(ifp);
+		
+		if(read_buff[count] == ' ')										/* produce token for substract */
+			fprintf(stdout, "subtract ");
+
+		if(isdigit(read_buff[count]))										/* produce token for number */
+		{
+	   	decimal_used = 0;
+	   	count++;
+	   	read_buff[count] = fgetc(ifp);
+	   	if(read_buff[count] == '.')									/* check for first decimal */
+	   	{
+	   		decimal_used = 1;
+	   		count++;
+	   		read_buff[count] = fgetc(ifp);
+	   		if(read_buff[count] == '.')								/* decimal error check */
+	   		{
+	   			fprintf(stderr, "error: multiple decimals in number");
+	   			exit(1);
+	   		}
+	   	}
+	   	while(isdigit(read_buff[count]))								/* continue reading digits */
+	   	{
+	   		count++;
+	   		read_buff[count] = fgetc(ifp);
+				if(read_buff[count] == '.' && decimal_used)			/* decimal error check */
+	   		{
+	   			fprintf(stderr, "error: multiple decimals in number");
+	   			exit(1);
+	   		}
+	   		else if(read_buff[count] == '.')							/* first decimal - allowed */
+		   	{
+		   		decimal_used = 1;
+		   		count++;
+		   		read_buff[count] = fgetc(ifp);
+		   		if(read_buff[count] == '.')							/* decimal error check */
+		   		{
+		   			fprintf(stderr, "error: multiple decimals in number");
+		   			exit(1);
+		   		}
+		   	}
+	    	}
+	    	if(read_buff[count] != ' '  &&								/* incorrect character usage */
+	    		read_buff[count] != '\n' &&
+	    		read_buff[count] != '\t' &&
+	    		read_buff[count] != EOF)									
+	    	{
+	    		fprintf(stderr, "error: unrecognized token");
+	    		exit(1);
+	    	}
+	    	
+	    	fprintf(stdout, "number ");
+	    	count = 0;
+	   }
+
+		if(read_buff[count] == '.')										/* check for first decimal */
+	   {
+	   	decimal_used = 1;
+	   	count++;
+	   	read_buff[count] = fgetc(ifp);
+	   	if(read_buff[count] == '.')									/* decimal error check */
+	   	{
+	   		fprintf(stderr, "error: multiple decimals in number");
+	   		exit(1);
+	   	}
+	   
+	   	while(isdigit(read_buff[count]))								/* continue reading digits */
+	   	{
+	   		count++;
+	   		read_buff[count] = fgetc(ifp);
+				if(read_buff[count] == '.' && decimal_used)			/* decimal error check */
+	   		{
+	   			fprintf(stderr, "error: multiple decimals in number");
+	   			exit(1);
+	   		}
+	   		else if(read_buff[count] == '.')							/* first decimal - allowed */
+		   	{
+		   		decimal_used = 1;
+		   		count++;
+		   		read_buff[count] = fgetc(ifp);
+		   		if(read_buff[count] == '.')							/* decimal error check */
+		   		{
+		   			fprintf(stderr, "error: multiple decimals in number");
+		   			exit(1);
+		   		}
+		   	}
+	    	}
+	    	if(read_buff[count] != ' '  &&								/* incorrect character usage */
+	    		read_buff[count] != '\n' &&
+	    		read_buff[count] != '\t' &&
+	    		read_buff[count] != EOF)									
+	    	{
+	    		fprintf(stderr, "error: unrecognized token");
+	    		exit(1);
+	    	}
+	    	
+	    	fprintf(stdout, "number ");
+	    	count = 0;
+	   }
 
 
+	} /* switch */
 
-	}
-*/
 
 
 	fclose(ifp);
