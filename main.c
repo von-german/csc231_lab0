@@ -33,6 +33,63 @@ int main(int argc, char ** argv)
 				read_buff[count] == '\t')											
 			read_buff[count] = fgetc(ifp);
    	
+		if(read_buff[count] == 'p')												/* produce token for output */
+		{
+			count++;
+			read_buff[count] = fgetc(ifp);
+			if(read_buff[count] == 'r')
+			{
+				count++;
+				read_buff[count] = fgetc(ifp);
+				if(read_buff[count] == 'i')
+				{
+					count++;
+					read_buff[count] = fgetc(ifp);
+					if(read_buff[count] == 'n')
+					{
+						count++;
+						read_buff[count] = fgetc(ifp);
+						if(read_buff[count] == 't')
+						{
+							count++;
+							read_buff[count] = fgetc(ifp);
+							if(read_buff[count] == ' ')
+							{
+								count++;
+								read_buff[count] = fgetc(ifp);
+								fprintf(stdout, "output ");
+							}
+							else
+							{
+								fseek(ifp, -1, SEEK_CUR);
+								count--;
+							}
+						}
+						else
+						{
+							fseek(ifp, -1, SEEK_CUR);
+							count--;
+						}
+					}
+					else
+					{
+						fseek(ifp, -1, SEEK_CUR);
+						count--;
+					}
+				}
+				else
+				{
+					fseek(ifp, -1, SEEK_CUR);
+					count--;
+				}
+			}
+			else
+			{
+				fseek(ifp, -1, SEEK_CUR);
+				count--;
+			}
+		}
+
    	if(isalpha(read_buff[count]))												/* produce token for id */
    	{	
    		while(isalpha(read_buff[count]) ||									/* letter, digit, or underscore? */
@@ -47,7 +104,7 @@ int main(int argc, char ** argv)
 	   	count = 0;
 	   }
 
-	   else if(isdigit(read_buff[count]))												/* produce token for number */
+	   else if(isdigit(read_buff[count]))										/* produce token for number */
 	   {
 	   	decimal_used = 0;
 	   	count++;
