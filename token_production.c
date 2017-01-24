@@ -90,18 +90,16 @@ void tokenizer(const char * const file_name)
 			}
 		}
 
-	   	if(isalpha(read_buff[count]))														/* produce token for ID */
-	   	{	
-	   		while(isalpha(read_buff[count]) ||												/* letter, digit, or underscore? */
-	   			  isdigit(read_buff[count]) ||
-	   			read_buff[count] == '_'	)
+	   	if(isalpha(read_buff[count]))													/* produce token for ID */ 
+		{	
+			do
 		   	{
 		   		count++;
 		   		read_buff[count] = fgetc(ifp);
 		   	}
-
-		   	count--;
-		   	fseek(ifp, -1, SEEK_CUR);
+		   	while(isalpha(read_buff[count]) ||											/* letter, digit, or underscore? */
+	   			  isdigit(read_buff[count]) ||
+	   			  read_buff[count] == '_'	)
 
 		   	if(read_buff[count] == ' ')
 		   	{
@@ -115,39 +113,44 @@ void tokenizer(const char * const file_name)
 		   		exit(1);
 		   	}
 		}
-		else if(isdigit(read_buff[count]))													/* produce token for NUMBER */
+		else if(isdigit(read_buff[count]))												/* produce token for NUMBER */
 		{
 			decimal_used = 0;
 		   	count++;
 		   	read_buff[count] = fgetc(ifp);
-		   	if(read_buff[count] == '.')														/* check for first decimal */
+		   
+		   	if(read_buff[count] == '.')													/* check for first decimal */
 		   	{
 		   		decimal_used = 1;
 		   		count++;
 		   		read_buff[count] = fgetc(ifp);
-		   		if(read_buff[count] == '.')													/* decimal error check */
+		   		
+		   		if(read_buff[count] == '.')												/* decimal error check */
 		   		{
 		   			fprintf(stderr, "error: multiple decimals in number");
 		   			fflush(stderr);
 		   			exit(1);
 		   		}
 			}
-		   	while(isdigit(read_buff[count]))												/* continue reading digits */
+
+		   	while(isdigit(read_buff[count]))											/* continue reading digits */
 		   	{
 		   		count++;
 		   		read_buff[count] = fgetc(ifp);
-					if(read_buff[count] == '.' && decimal_used)								/* decimal error check */
+				
+				if(read_buff[count] == '.' && decimal_used)								/* decimal error check */
 		   		{
 		   			fprintf(stderr, "error: multiple decimals in number");
 		   			fflush(stderr);
 		   			exit(1);
 		   		}
-		   		else if(read_buff[count] == '.')											/* first decimal - allowed */
+		   		else if(read_buff[count] == '.')										/* first decimal - allowed */
 			   	{
 			   		decimal_used = 1;
 			   		count++;
 			   		read_buff[count] = fgetc(ifp);
-			   		if(read_buff[count] == '.')												/* decimal error check */
+			   		
+			   		if(read_buff[count] == '.')											/* decimal error check */
 			   		{
 			   			fprintf(stderr, "error: multiple decimals in number");
 			   			fflush(stderr);
@@ -172,7 +175,7 @@ void tokenizer(const char * const file_name)
 		}
 		else switch(read_buff[count])
 		{
-			case '-':																		/* case '_' */
+			case '-':																	/* case '-' */
 
 			count++;
 			read_buff[count] = fgetc(ifp);
@@ -189,11 +192,13 @@ void tokenizer(const char * const file_name)
 				   	decimal_used = 0;
 				   	count++;
 				   	read_buff[count] = fgetc(ifp);
+				   
 				   	if(read_buff[count] == '.')											/* check for first decimal */
 				   	{
 						decimal_used = 1;
 						count++;
 						read_buff[count] = fgetc(ifp);
+						
 						if(read_buff[count] == '.')										/* decimal error check */
 						{
 							fprintf(stderr, "error: multiple decimals in number");
@@ -292,14 +297,14 @@ void tokenizer(const char * const file_name)
 						exit(1);
 					}
 						    	
-						fprintf(stdout, "number ");
-						fflush(stdout);
-						count = 0;
+					fprintf(stdout, "number ");
+					fflush(stdout);
+					count = 0;
 				}		   
 			} /* end else */
 				break;
 
-			case '*':																		/* case '*' or '**' */
+			case '*':																	/* case '*' or '**' */
 				count++;
 				read_buff[count] = fgetc(ifp);
 		
@@ -317,45 +322,42 @@ void tokenizer(const char * const file_name)
 				}
 				break;
 
-			case '(':																		/* case '(' */
+			case '(':																	/* case '(' */
 				fprintf(stdout, "lparen ");
 				fflush(stdout);
 				break;
 
-			case ')':																		/* case ')' */
+			case ')':																	/* case ')' */
 				fprintf(stdout, "rparen ");
 				fflush(stdout);
 				break;
 
-			case '+':																		/* case '+' */
+			case '+':																	/* case '+' */
 				fprintf(stdout, "add ");
 				fflush(stdout);
 				break;
 
-			case '/':																		/* case '/' */
+			case '/':																	/* case '/' */
 				fprintf(stdout, "divide ");
 				fflush(stdout);
 				break;
 
-			case '=':																		/* case '=' */
+			case '=':																	/* case '=' */
 				fprintf(stdout, "assign ");
 				fflush(stdout);
 				break;
 
-			case ';':																		/* case ';' */
+			case ';':																	/* case ';' */
 				fprintf(stdout, "semi ");
 				fflush(stdout);
 				break;
-
-
 		} /* end switch */
 
-			count = 0;
-			read_buff[count] = fgetc(ifp);
+		count = 0;
+		read_buff[count] = fgetc(ifp);
+	}   /* end while */
 
-	}    /* end while */
-
-		fclose(ifp);
-		fprintf(stdout, "nomore\n");
-		fflush(stdout);
+	fclose(ifp);
+	fprintf(stdout, "nomore\n");
+	fflush(stdout);
 }	/* end function tokenizer */
