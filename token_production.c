@@ -14,7 +14,7 @@ void tokenizer(const char * const file_name)
 	
 	if(ifp == NULL)																		/* error check for opening file */
 	{
-		fprintf(stderr, "error: file does not exist\n");									/* error check for nonexistent file */
+		fprintf(stderr, "\nerror: file does not exist\n");									/* error check for nonexistent file */
 		fflush(stderr);
 		exit(1);
 	}
@@ -24,10 +24,8 @@ void tokenizer(const char * const file_name)
 
 	while(read_buff[count] != EOF)														/* read char one-by-one from input file into read_buff */
 	{
-		while(read_buff[count] == ' '  ||												/* clear white-space */
-			  read_buff[count] == '\n' || 
-		  	  read_buff[count] == '\t')											
-			read_buff[count] = fgetc(ifp);
+		while(isspace(read_buff[count]))												/* clear white-space */										
+			  read_buff[count] = fgetc(ifp);
 	   	
 		if(read_buff[count] == 'p')														/* produce token for OUTPUT */
 		{
@@ -103,14 +101,14 @@ void tokenizer(const char * const file_name)
 	   			  isdigit(read_buff[count]) ||
 	   			  read_buff[count] == '_'	);
 
-		   	if(read_buff[count] == ' ')
+		   	if(isspace(read_buff[count]))
 		   	{
 		   		fprintf(stdout, "id ");
 		   		fflush(stdout);
 		   	}
 		   	else
 		   	{
-		   		fprintf(stderr, "error: unrecognized token");
+		   		fprintf(stderr, "\nerror: unrecognized token\n");
 		   		fflush(stderr);
 		   		exit(1);
 		   	}
@@ -129,7 +127,7 @@ void tokenizer(const char * const file_name)
 		   		
 		   		if(read_buff[count] == '.')												/* decimal error check */
 		   		{
-		   			fprintf(stderr, "error: multiple decimals in number");
+		   			fprintf(stderr, "\nerror: multiple decimals in number\n");
 		   			fflush(stderr);
 		   			exit(1);
 		   		}
@@ -142,7 +140,7 @@ void tokenizer(const char * const file_name)
 				
 				if(read_buff[count] == '.' && decimal_used)								/* decimal error check */
 		   		{
-		   			fprintf(stderr, "error: multiple decimals in number");
+		   			fprintf(stderr, "\nerror: multiple decimals in number\n");
 		   			fflush(stderr);
 		   			exit(1);
 		   		}
@@ -154,19 +152,24 @@ void tokenizer(const char * const file_name)
 			   		
 			   		if(read_buff[count] == '.')											/* decimal error check */
 			   		{
-			   			fprintf(stderr, "error: multiple decimals in number");
+			   			fprintf(stderr, "\nerror: multiple decimals in number\n");
 			   			fflush(stderr);
 			   			exit(1);
 			   		}
 			   	}
 		    }
 		    
-		    if(read_buff[count] != ' '  &&												/* incorrect character usage */
-		       read_buff[count] != '\n' &&
-		       read_buff[count] != '\t' &&
-			   read_buff[count] != EOF)									
+		    if(!isspace(read_buff[count]) &&									/* incorrect character usage */
+				  read_buff[count] != '(' &&
+				  read_buff[count] != ')' &&
+				  read_buff[count] != '+' &&									/* function to check for operators? */
+				  read_buff[count] != '-' &&
+				  read_buff[count] != '*' &&
+				  read_buff[count] != '/' &&
+				  read_buff[count] != '=' &&
+				  read_buff[count] != ';')									
 		    {
-		    	fprintf(stderr, "error: unrecognized token");
+		    	fprintf(stderr, "\nerror: unrecognized token\n");
 		    	fflush(stderr);
 		    	exit(1);
 		    }
@@ -203,7 +206,7 @@ void tokenizer(const char * const file_name)
 						
 						if(read_buff[count] == '.')										/* decimal error check */
 						{
-							fprintf(stderr, "error: multiple decimals in number");
+							fprintf(stderr, "\nerror: multiple decimals in number\n");
 							fflush(stderr);
 							exit(1);
 						}
@@ -216,7 +219,7 @@ void tokenizer(const char * const file_name)
 						
 						if(read_buff[count] == '.' && decimal_used)						/* decimal error check */
 						{
-							fprintf(stderr, "error: multiple decimals in number");
+							fprintf(stderr, "\nerror: multiple decimals in number\n");
 							fflush(stderr);
 							exit(1);
 						}
@@ -228,19 +231,24 @@ void tokenizer(const char * const file_name)
 							
 							if(read_buff[count] == '.')									/* decimal error check */
 							{
-								fprintf(stderr, "error: multiple decimals in number");
+								fprintf(stderr, "\nerror: multiple decimals in number\n");
 								fflush(stderr);
 								exit(1);
 							}
 						}
 					}
 					
-					if(read_buff[count] != ' '  &&										/* incorrect character usage */
-					   read_buff[count] != '\n' &&
-					   read_buff[count] != '\t' &&
-					   read_buff[count] != EOF)									
+					if(!isspace(read_buff[count]) &&									/* incorrect character usage */
+					      read_buff[count] != '(' &&
+					      read_buff[count] != ')' &&
+						  read_buff[count] != '+' &&									/* function to check for operators? */
+						  read_buff[count] != '-' &&
+						  read_buff[count] != '*' &&
+						  read_buff[count] != '/' &&
+						  read_buff[count] != '=' &&
+						  read_buff[count] != ';')									
 					{
-						fprintf(stderr, "error: unrecognized token");
+						fprintf(stderr, "\nerror: unrecognized token\n");
 						fflush(stderr);
 						exit(1);
 					}
@@ -258,7 +266,7 @@ void tokenizer(const char * const file_name)
 					
 					if(read_buff[count] == '.')											/* decimal error check */
 					{
-						fprintf(stderr, "error: multiple decimals in number");
+						fprintf(stderr, "\nerror: multiple decimals in number\n");
 						fflush(stderr);
 						exit(1);
 					}
@@ -270,7 +278,7 @@ void tokenizer(const char * const file_name)
 						
 						if(read_buff[count] == '.' && decimal_used)						/* decimal error check */
 						{
-							fprintf(stderr, "error: multiple decimals in number");
+							fprintf(stderr, "\nerror: multiple decimals in number\n");
 							fflush(stderr);
 							exit(1);
 						}
@@ -282,19 +290,24 @@ void tokenizer(const char * const file_name)
 							
 							if(read_buff[count] == '.')									/* decimal error check */
 							{
-								fprintf(stderr, "error: multiple decimals in number");
+								fprintf(stderr, "\nerror: multiple decimals in number\n");
 								fflush(stderr);
 								exit(1);
 							}
 						}
 					}
 					
-					if(read_buff[count] != ' '  &&										/* incorrect character usage */
-					   read_buff[count] != '\n' &&
-					   read_buff[count] != '\t' &&
-					   read_buff[count] != EOF)									
+					if(!isspace(read_buff[count]) &&									/* incorrect character usage */
+					      read_buff[count] != '(' &&
+					      read_buff[count] != ')' &&
+						  read_buff[count] != '+' &&									/* function to check for operators? */
+						  read_buff[count] != '-' &&
+						  read_buff[count] != '*' &&
+						  read_buff[count] != '/' &&
+						  read_buff[count] != '=' &&
+						  read_buff[count] != ';')									
 					{
-						fprintf(stderr, "error: unrecognized token");
+						fprintf(stderr, "\nerror: unrecognized token\n");
 						fflush(stderr);
 						exit(1);
 					}
@@ -303,7 +316,7 @@ void tokenizer(const char * const file_name)
 					fflush(stdout);
 					count = 0;
 				}		   
-			} /* end else */
+			}   /* end else */
 				break;
 
 			case '*':																	/* case '*' or '**' */
