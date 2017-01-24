@@ -1,6 +1,6 @@
 /* vonbwd14, Will von Behren 
    token_production.h */
-   
+
 #include "token_production.h"
 
 void tokenizer(const char * const file_name)
@@ -101,7 +101,7 @@ void tokenizer(const char * const file_name)
 		   	}
 		   	while(isalpha(read_buff[count]) ||											/* letter, digit, or underscore? */
 	   			  isdigit(read_buff[count]) ||
-	   			  read_buff[count] == '_'	)
+	   			  read_buff[count] == '_'	);
 
 		   	if(read_buff[count] == ' ')
 		   	{
