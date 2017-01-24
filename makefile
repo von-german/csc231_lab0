@@ -1,3 +1,6 @@
+# vonbwd14, Will von Behren
+# makefile
+
 all: lexer
 
 lexer: main.o token_production.o

@@ -1,3 +1,6 @@
+/* vonbwd14, Will von Behren 
+   token_production.h */
+
 #ifndef TOKEN_PRODUCTION_H
 #define TOKEN_PRODUCTION_H
 
