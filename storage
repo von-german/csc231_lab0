@@ -1,0 +1,134 @@
+					count++;															/* check for imaginary expression REMOVE THIS */
+					read_buff[count] = fgetc(ifp);
+					if(read_buff[count] == '-')
+					{
+						count++;
+						read_buff[count] = fgetc(ifp);
+						while(isdigit(read_buff[count]) || read_buff[count] == '.')
+						{
+							if(read_buff[count] == '.' && !decimal_used)
+							{
+								decimal_used = 1;
+							}
+							else if(read_buff[count] == '.' && decimal_used)
+							{
+								fprintf(stderr, "error: multiple decimals in number");
+								fflush(stderr);
+								exit(1);
+							}
+
+							count++;
+							read_buff[count] = fgetc(ifp);
+						}
+
+						if(read_buff[count] != ')')								/* assume "(-" pair is met with only number and ending ')' */
+						{
+							fprintf(stderr, "error: missing rparen token");
+							fflush(stderr);
+							exit(1);
+						}
+
+						fprintf(stdout, "number ");
+						fprintf(stdout, "rparen ");
+						fflush(stdout);
+
+						count++;
+						read_buff[count] = fgetc(ifp);
+						if(read_buff[count] == '*')
+						{
+							count++;
+							read_buff[count] = fgetc(ifp);
+							if(read_buff[count] == '*')
+							{
+								fprintf(stdout, "exponent ");
+								fflush(stdout);
+								count++;
+								read_buff[count] = fgetc(ifp);
+								if(read_buff[count] == '(')
+								{
+									fprintf(stdout, "lparen ");
+									fflush(stdout);
+									count++;
+									read_buff[count] = fgetc(ifp);
+									if(read_buff[count] == '1')
+									{
+										fprintf(stdout, "number ");
+										fflush(stdout);
+										count++;
+										read_buff[count] = fgetc(ifp);
+										if(read_buff[count] == '/')
+										{
+											fprintf(stdout, "division ");
+											fflush(stdout);
+											count++;
+											read_buff[count] = fgetc(ifp);
+											if(read_buff[count] != '1')
+											{
+												fprintf(stderr, "error: imaginary expression"); /* very, very crude imaginary expression check */
+												fflush(stderr);
+												exit(1);
+											}
+											else
+											{
+												count--;
+												fseek(ifp, -1, SEEK_CUR);
+											}
+										}
+										else
+										{
+											count--;
+											fseek(ifp, -1, SEEK_CUR);
+										}
+									}
+									else
+									{
+										count--;
+										fseek(ifp, -1, SEEK_CUR);
+									}
+								}
+								else
+								{
+									count--;
+									fseek(ifp, -1, SEEK_CUR);
+								}
+							}
+							else
+							{
+								count--;
+								fseek(ifp, -1, SEEK_CUR);
+								fprintf(stdout, "multiply ");
+								fflush(stdout);
+							}
+						}
+						else
+						{
+							count--;
+							fseek(ifp, -1, SEEK_CUR);
+						}
+					}
+					else
+					{
+						fseek(ifp, -1, SEEK_CUR);
+						count--;
+					}
+
+
+----------------------------------
+
+
+
+					fgetc(ifp);
+					count += 2;
+					read_buff[count] = fgetc(ifp);
+					if(read_buff[count] == '0')
+					{
+						fprintf(stderr, "error: division by zero\n");
+						fflush(stderr);
+						exit(1);
+					}
+					else
+					{
+						fseek(ifp, -2, SEEK_CUR);
+						count -= 2;
+					}
+
