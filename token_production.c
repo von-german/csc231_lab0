@@ -31,7 +31,7 @@ void tokenizer(const char * const file_name)
 		{
 			count++;
 			read_buff[count] = fgetc(ifp);
-			
+
 			if(read_buff[count] == 'r')
 			{
 				count++;
@@ -94,8 +94,17 @@ void tokenizer(const char * const file_name)
 		{	
 			do
 		   	{
-		   		count++;
-		   		read_buff[count] = fgetc(ifp);
+		   		if(count < 256)
+		   		{
+		   			count++;
+		   			read_buff[count] = fgetc(ifp);
+		   		}
+		   		else
+		   		{
+		   			fprintf(stderr, "error: buffer overflow");
+		   			fflush(stderr);
+		   			exit(1);
+		   		}
 		   	}
 		   	while(isalpha(read_buff[count]) ||											/* letter, digit, or underscore? */
 	   			  isdigit(read_buff[count]) ||
@@ -135,9 +144,18 @@ void tokenizer(const char * const file_name)
 
 		   	while(isdigit(read_buff[count]))											/* continue reading digits */
 		   	{
-		   		count++;
-		   		read_buff[count] = fgetc(ifp);
-				
+		   		if(count < 256)
+		   		{
+		   			count++;
+		   			read_buff[count] = fgetc(ifp);
+		   		}
+		   		else
+		   		{
+		   			fprintf(stderr, "error: buffer overflow");
+		   			fflush(stderr);
+		   			exit(1);
+		   		}
+
 				if(read_buff[count] == '.' && decimal_used)								/* decimal error check */
 		   		{
 		   			fprintf(stderr, "\nerror: multiple decimals in number\n");
@@ -147,8 +165,17 @@ void tokenizer(const char * const file_name)
 		   		else if(read_buff[count] == '.')										/* first decimal - allowed */
 			   	{
 			   		decimal_used = 1;
-			   		count++;
-			   		read_buff[count] = fgetc(ifp);
+				   	if(count < 256)
+			   		{
+			   			count++;
+			   			read_buff[count] = fgetc(ifp);
+			   		}
+			   		else
+			   		{
+			   			fprintf(stderr, "error: buffer overflow");
+			   			fflush(stderr);
+			   			exit(1);
+			   		}
 			   		
 			   		if(read_buff[count] == '.')											/* decimal error check */
 			   		{
@@ -159,10 +186,10 @@ void tokenizer(const char * const file_name)
 			   	}
 		    }
 		    
-		    if(!isspace(read_buff[count]) &&									/* incorrect character usage */
+		    if(!isspace(read_buff[count]) &&											/* incorrect character usage */
 				  read_buff[count] != '(' &&
 				  read_buff[count] != ')' &&
-				  read_buff[count] != '+' &&									/* function to check for operators? */
+				  read_buff[count] != '+' &&											/* function to check for operators? */
 				  read_buff[count] != '-' &&
 				  read_buff[count] != '*' &&
 				  read_buff[count] != '/' &&
@@ -182,9 +209,18 @@ void tokenizer(const char * const file_name)
 		{
 			case '-':																	/* case '-' */
 
-			count++;
-			read_buff[count] = fgetc(ifp);
-					
+			if(count < 256)
+		   	{
+		   		count++;
+		   		read_buff[count] = fgetc(ifp);
+		   	}
+		   	else
+		   	{
+		   		fprintf(stderr, "error: buffer overflow");
+		   		fflush(stderr);
+		   		exit(1);
+		   	}
+			
 			if(read_buff[count] == ' ')													/* produce token for SUBTRACT */
 			{												
 				fprintf(stdout, "subtract ");
@@ -195,15 +231,35 @@ void tokenizer(const char * const file_name)
 				if(isdigit(read_buff[count]))											/* produce token for NUMBER */
 				{
 				   	decimal_used = 0;
-				   	count++;
-				   	read_buff[count] = fgetc(ifp);
+				   	
+				   	if(count < 256)
+			   		{
+			   			count++;
+			   			read_buff[count] = fgetc(ifp);
+			   		}
+			   		else
+			   		{
+			   			fprintf(stderr, "error: buffer overflow");
+			   			fflush(stderr);
+			   			exit(1);
+			   		}
 				   
 				   	if(read_buff[count] == '.')											/* check for first decimal */
 				   	{
 						decimal_used = 1;
-						count++;
-						read_buff[count] = fgetc(ifp);
 						
+						if(count < 256)
+				   		{
+				   			count++;
+				   			read_buff[count] = fgetc(ifp);
+				   		}
+				   		else
+				   		{
+				   			fprintf(stderr, "error: buffer overflow");
+				   			fflush(stderr);
+				   			exit(1);
+				   		}
+
 						if(read_buff[count] == '.')										/* decimal error check */
 						{
 							fprintf(stderr, "\nerror: multiple decimals in number\n");
@@ -213,10 +269,19 @@ void tokenizer(const char * const file_name)
 					}
 					
 					while(isdigit(read_buff[count]))									/* continue reading digits */
-					{
-						count++;
-						read_buff[count] = fgetc(ifp);
-						
+					{		   		
+						if(count < 256)
+				   		{
+				   			count++;
+				   			read_buff[count] = fgetc(ifp);
+				   		}
+				   		else
+				   		{
+				   			fprintf(stderr, "error: buffer overflow");
+				   			fflush(stderr);
+				   			exit(1);
+				   		}
+
 						if(read_buff[count] == '.' && decimal_used)						/* decimal error check */
 						{
 							fprintf(stderr, "\nerror: multiple decimals in number\n");
@@ -226,8 +291,18 @@ void tokenizer(const char * const file_name)
 						else if(read_buff[count] == '.')								/* first decimal - allowed */
 						{
 							decimal_used = 1;
-							count++;
-							read_buff[count] = fgetc(ifp);
+							
+							if(count < 256)
+					   		{
+					   			count++;
+					   			read_buff[count] = fgetc(ifp);
+					   		}
+					   		else
+					   		{
+					   			fprintf(stderr, "error: buffer overflow");
+					   			fflush(stderr);
+					   			exit(1);
+					   		}
 							
 							if(read_buff[count] == '.')									/* decimal error check */
 							{
@@ -261,9 +336,19 @@ void tokenizer(const char * const file_name)
 				if(read_buff[count] == '.')										
 				{
 					decimal_used = 1;
-					count++;
-					read_buff[count] = fgetc(ifp);
 					
+					if(count < 256)
+			   		{
+			   			count++;
+			   			read_buff[count] = fgetc(ifp);
+			   		}
+			   		else
+			   		{
+			   			fprintf(stderr, "error: buffer overflow");
+			   			fflush(stderr);
+			   			exit(1);
+			   		}
+
 					if(read_buff[count] == '.')											/* decimal error check */
 					{
 						fprintf(stderr, "\nerror: multiple decimals in number\n");
@@ -273,9 +358,18 @@ void tokenizer(const char * const file_name)
 						   
 					while(isdigit(read_buff[count]))									/* continue reading digits */
 					{
-						count++;
-						read_buff[count] = fgetc(ifp);
-						
+						if(count < 256)
+				   		{
+				   			count++;
+				   			read_buff[count] = fgetc(ifp);
+				   		}
+				   		else
+				   		{
+				   			fprintf(stderr, "error: buffer overflow");
+				   			fflush(stderr);
+				   			exit(1);
+				   		}
+
 						if(read_buff[count] == '.' && decimal_used)						/* decimal error check */
 						{
 							fprintf(stderr, "\nerror: multiple decimals in number\n");
@@ -285,9 +379,19 @@ void tokenizer(const char * const file_name)
 						else if(read_buff[count] == '.')								/* first decimal - allowed */
 						{
 							decimal_used = 1;
-							count++;
-							read_buff[count] = fgetc(ifp);
 							
+							if(count < 256)
+					   		{
+					   			count++;
+					   			read_buff[count] = fgetc(ifp);
+					   		}
+					   		else
+					   		{
+					   			fprintf(stderr, "error: buffer overflow");
+					   			fflush(stderr);
+					   			exit(1);
+					   		}
+
 							if(read_buff[count] == '.')									/* decimal error check */
 							{
 								fprintf(stderr, "\nerror: multiple decimals in number\n");
