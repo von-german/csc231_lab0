@@ -3,21 +3,11 @@
 
 #include "token_production.h"
 
-void tokenizer(const char * const file_name)
+token tokenizer(FILE * ifp)
 {
-	FILE * ifp;																			/* input file pointer */
 	char read_buff[BUFF_SIZE];															/* input buffer */
 	int count;																			/* counter */
 	int decimal_used;																	/* boolean for decimal check */
-
-	ifp = fopen(file_name, "r");														/* open file */
-	
-	if(ifp == NULL)																		/* error check for opening file */
-	{
-		fprintf(stderr, "\nerror: file does not exist\n");									/* error check for nonexistent file */
-		fflush(stderr);
-		exit(1);
-	}
 
 	count = 0;
 	read_buff[count] = fgetc(ifp);														/* new character */	
@@ -56,8 +46,7 @@ void tokenizer(const char * const file_name)
 							{
 								count++;
 								read_buff[count] = fgetc(ifp);
-								fprintf(stdout, "output ");
-								fflush(stdout);
+								return 10;
 							}
 							else
 							{
@@ -111,10 +100,7 @@ void tokenizer(const char * const file_name)
 	   			  read_buff[count] == '_'	);
 
 		   	if(isspace(read_buff[count]))
-		   	{
-		   		fprintf(stdout, "id ");
-		   		fflush(stdout);
-		   	}
+		   		return 11;
 		   	else
 		   	{
 		   		fprintf(stderr, "\nerror: unrecognized token\n");
@@ -200,10 +186,8 @@ void tokenizer(const char * const file_name)
 		    	fflush(stderr);
 		    	exit(1);
 		    }
-		    	
-		    fprintf(stdout, "number ");
-		    fflush(stdout);
-		    count = 0;
+		    
+		    return 12;
 		}
 		else switch(read_buff[count])
 		{
@@ -221,11 +205,8 @@ void tokenizer(const char * const file_name)
 		   		exit(1);
 		   	}
 			
-			if(read_buff[count] == ' ')													/* produce token for SUBTRACT */
-			{												
-				fprintf(stdout, "subtract ");
-				fflush(stdout);
-			}
+			if(read_buff[count] == ' ')													/* produce token for SUBTRACT */	
+				return 4;
 			else 
 			{
 				if(isdigit(read_buff[count]))											/* produce token for NUMBER */
@@ -327,10 +308,8 @@ void tokenizer(const char * const file_name)
 						fflush(stderr);
 						exit(1);
 					}
-						    	
-					fprintf(stdout, "number ");
-					fflush(stdout);
-					count = 0;
+					
+					return 12;
 				}
 
 				if(read_buff[count] == '.')										
@@ -415,10 +394,8 @@ void tokenizer(const char * const file_name)
 						fflush(stderr);
 						exit(1);
 					}
-						    	
-					fprintf(stdout, "number ");
-					fflush(stdout);
-					count = 0;
+
+					return 12;
 				}		   
 			}   /* end else */
 				break;
@@ -428,47 +405,37 @@ void tokenizer(const char * const file_name)
 				read_buff[count] = fgetc(ifp);
 		
 				if(read_buff[count] == '*')
-				{
-					fprintf(stdout, "exponent ");
-					fflush(stdout);
-				}
+					return 7;
 				else
 				{
 					fseek(ifp, -1, SEEK_CUR);
 					count--;
-					fprintf(stdout, "multiply ");
-					fflush(stdout);
+					return 5;
 				}
 				break;
 
 			case '(':																	/* case '(' */
-				fprintf(stdout, "lparen ");
-				fflush(stdout);
+				return 1;
 				break;
 
 			case ')':																	/* case ')' */
-				fprintf(stdout, "rparen ");
-				fflush(stdout);
+				return 2;
 				break;
 
 			case '+':																	/* case '+' */
-				fprintf(stdout, "add ");
-				fflush(stdout);
+				return 3;
 				break;
 
 			case '/':																	/* case '/' */
-				fprintf(stdout, "divide ");
-				fflush(stdout);
+				return 4;
 				break;
 
 			case '=':																	/* case '=' */
-				fprintf(stdout, "assign ");
-				fflush(stdout);
+				return 8;
 				break;
 
 			case ';':																	/* case ';' */
-				fprintf(stdout, "semi ");
-				fflush(stdout);
+				return 9;
 				break;
 		} /* end switch */
 
@@ -476,7 +443,5 @@ void tokenizer(const char * const file_name)
 		read_buff[count] = fgetc(ifp);
 	}   /* end while */
 
-	fclose(ifp);
-	fprintf(stdout, "nomore\n");
-	fflush(stdout);
+	return 13;
 }	/* end function tokenizer */
