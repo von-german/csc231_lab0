@@ -2,6 +2,7 @@
    token_production.h */
 
 #include "token_production.h"
+#include "error_handling.h"
 
 token tokenizer(FILE * ifp)
 {
@@ -89,11 +90,7 @@ token tokenizer(FILE * ifp)
 		   			read_buff[count] = fgetc(ifp);
 		   		}
 		   		else
-		   		{
-		   			fprintf(stderr, "error: buffer overflow");
-		   			fflush(stderr);
-		   			exit(1);
-		   		}
+		   			buffer_overflow();
 		   	}
 		   	while(isalpha(read_buff[count]) ||											/* letter, digit, or underscore? */
 	   			  isdigit(read_buff[count]) ||
@@ -102,11 +99,7 @@ token tokenizer(FILE * ifp)
 		   	if(isspace(read_buff[count]))
 		   		return 11;
 		   	else
-		   	{
-		   		fprintf(stderr, "\nerror: unrecognized token\n");
-		   		fflush(stderr);
-		   		exit(1);
-		   	}
+		   		unrecognized_token();
 		}
 		else if(isdigit(read_buff[count]))												/* produce token for NUMBER */
 		{
@@ -121,11 +114,7 @@ token tokenizer(FILE * ifp)
 		   		read_buff[count] = fgetc(ifp);
 		   		
 		   		if(read_buff[count] == '.')												/* decimal error check */
-		   		{
-		   			fprintf(stderr, "\nerror: multiple decimals in number\n");
-		   			fflush(stderr);
-		   			exit(1);
-		   		}
+		   			multiple_decimals();
 			}
 
 		   	while(isdigit(read_buff[count]))											/* continue reading digits */
@@ -136,18 +125,10 @@ token tokenizer(FILE * ifp)
 		   			read_buff[count] = fgetc(ifp);
 		   		}
 		   		else
-		   		{
-		   			fprintf(stderr, "error: buffer overflow");
-		   			fflush(stderr);
-		   			exit(1);
-		   		}
+		   			buffer_overflow();
 
 				if(read_buff[count] == '.' && decimal_used)								/* decimal error check */
-		   		{
-		   			fprintf(stderr, "\nerror: multiple decimals in number\n");
-		   			fflush(stderr);
-		   			exit(1);
-		   		}
+		   			multiple_decimals();
 		   		else if(read_buff[count] == '.')										/* first decimal - allowed */
 			   	{
 			   		decimal_used = 1;
@@ -157,18 +138,10 @@ token tokenizer(FILE * ifp)
 			   			read_buff[count] = fgetc(ifp);
 			   		}
 			   		else
-			   		{
-			   			fprintf(stderr, "error: buffer overflow");
-			   			fflush(stderr);
-			   			exit(1);
-			   		}
+			   			buffer_overflow();
 			   		
 			   		if(read_buff[count] == '.')											/* decimal error check */
-			   		{
-			   			fprintf(stderr, "\nerror: multiple decimals in number\n");
-			   			fflush(stderr);
-			   			exit(1);
-			   		}
+			   			multiple_decimals();
 			   	}
 		    }
 		    
@@ -181,12 +154,10 @@ token tokenizer(FILE * ifp)
 				  read_buff[count] != '/' &&
 				  read_buff[count] != '=' &&
 				  read_buff[count] != ';')									
-		    {
-		    	fprintf(stderr, "\nerror: unrecognized token\n");
-		    	fflush(stderr);
-		    	exit(1);
-		    }
+		    	unrecognized_token();
 		    
+		    fseek(ifp, -1, SEEK_CUR);
+
 		    return 12;
 		}
 		else switch(read_buff[count])
@@ -215,11 +186,7 @@ token tokenizer(FILE * ifp)
 			   		read_buff[count] = fgetc(ifp);
 			   	}
 			   	else
-			   	{
-			   		fprintf(stderr, "error: buffer overflow");
-			   		fflush(stderr);
-			   		exit(1);
-			   	}
+			   		buffer_overflow();
 				   
 				if(read_buff[count] == '.')												/* check for first decimal */
 				{
@@ -231,21 +198,13 @@ token tokenizer(FILE * ifp)
 				   		read_buff[count] = fgetc(ifp);
 				   	}
 				   	else
-				   	{
-				   		fprintf(stderr, "error: buffer overflow");
-				   		fflush(stderr);
-				   		exit(1);
-				   	}
+				   		buffer_overflow();
 
 					if(read_buff[count] == '.')											/* decimal error check */
-					{
-						fprintf(stderr, "\nerror: multiple decimals in number\n");
-						fflush(stderr);
-						exit(1);
-					}
+						multiple_decimals();
 				}
 					
-				while(isdigit(read_buff[count]))									/* continue reading digits */
+				while(isdigit(read_buff[count]))										/* continue reading digits */
 				{		   		
 					if(count < 256)
 				  	{
@@ -253,19 +212,11 @@ token tokenizer(FILE * ifp)
 			 			read_buff[count] = fgetc(ifp);
 			   		}
 			   		else
-			   		{
-			   			fprintf(stderr, "error: buffer overflow");
-			   			fflush(stderr);
-			   			exit(1);
-			   		}
+			   			buffer_overflow();
 
-					if(read_buff[count] == '.' && decimal_used)						/* decimal error check */
-					{
-						fprintf(stderr, "\nerror: multiple decimals in number\n");
-						fflush(stderr);
-						exit(1);
-					}
-					else if(read_buff[count] == '.')								/* first decimal - allowed */
+					if(read_buff[count] == '.' && decimal_used)							/* decimal error check */
+						multiple_decimals();
+					else if(read_buff[count] == '.')									/* first decimal - allowed */
 					{
 						decimal_used = 1;
 							
@@ -275,36 +226,26 @@ token tokenizer(FILE * ifp)
 				   			read_buff[count] = fgetc(ifp);
 				   		}
 				   		else
-				   		{
-				   			fprintf(stderr, "error: buffer overflow");
-					   		fflush(stderr);
-					   		exit(1);
-					   	}
+				   			buffer_overflow();
 							
-						if(read_buff[count] == '.')									/* decimal error check */
-						{
-							fprintf(stderr, "\nerror: multiple decimals in number\n");
-							fflush(stderr);
-							exit(1);
-						}
+						if(read_buff[count] == '.')										/* decimal error check */
+							multiple_decimals();
 					}
 				}
 					
-				if(!isspace(read_buff[count]) &&									/* incorrect character usage */
+				if(!isspace(read_buff[count]) &&										/* incorrect character usage */
 				      read_buff[count] != '(' &&
 				      read_buff[count] != ')' &&
-					  read_buff[count] != '+' &&									/* function to check for operators? */
+					  read_buff[count] != '+' &&										/* function to check for operators? */
 					  read_buff[count] != '-' &&
 					  read_buff[count] != '*' &&
 					  read_buff[count] != '/' &&
 					  read_buff[count] != '=' &&
 					  read_buff[count] != ';')									
-				{
-					fprintf(stderr, "\nerror: unrecognized token\n");
-					fflush(stderr);
-					exit(1);
-				}
-					
+					unrecognized_token();
+				
+				fseek(ifp, -1, SEEK_CUR);
+
 				return 12;
 			}
 
@@ -318,20 +259,12 @@ token tokenizer(FILE * ifp)
 		   			read_buff[count] = fgetc(ifp);
 		   		}
 		   		else
-		   		{
-		   			fprintf(stderr, "error: buffer overflow");
-		   			fflush(stderr);
-		   			exit(1);
-		   		}
+		   			buffer_overflow();
 
-				if(read_buff[count] == '.')											/* decimal error check */
-				{
-					fprintf(stderr, "\nerror: multiple decimals in number\n");
-					fflush(stderr);
-					exit(1);
-				}
+				if(read_buff[count] == '.')												/* decimal error check */
+					multiple_decimals();
 						   
-				while(isdigit(read_buff[count]))									/* continue reading digits */
+				while(isdigit(read_buff[count]))										/* continue reading digits */
 				{
 					if(count < 256)
 			   		{
@@ -339,19 +272,11 @@ token tokenizer(FILE * ifp)
 		   				read_buff[count] = fgetc(ifp);
 				   	}
 			 		else
-				  	{
-				   		fprintf(stderr, "error: buffer overflow");
-				   		fflush(stderr);
-				   		exit(1);
-				   	}
+				  		buffer_overflow();
 
-					if(read_buff[count] == '.' && decimal_used)						/* decimal error check */
-					{
-						fprintf(stderr, "\nerror: multiple decimals in number\n");
-						fflush(stderr);
-						exit(1);
-					}
-					else if(read_buff[count] == '.')								/* first decimal - allowed */
+					if(read_buff[count] == '.' && decimal_used)							/* decimal error check */
+						multiple_decimals();
+					else if(read_buff[count] == '.')									/* first decimal - allowed */
 					{
 						decimal_used = 1;
 						
@@ -361,35 +286,23 @@ token tokenizer(FILE * ifp)
 				   			read_buff[count] = fgetc(ifp);
 				   		}
 				   		else
-				   		{
-					   		fprintf(stderr, "error: buffer overflow");
-				   			fflush(stderr);
-					   		exit(1);
-					   	}
+				   			buffer_overflow();
 
-						if(read_buff[count] == '.')									/* decimal error check */
-						{
-							fprintf(stderr, "\nerror: multiple decimals in number\n");
-							fflush(stderr);
-							exit(1);
-						}
+						if(read_buff[count] == '.')										/* decimal error check */
+							multiple_decimals();
 					}
 				}
 					
-				if(!isspace(read_buff[count]) &&									/* incorrect character usage */
+				if(!isspace(read_buff[count]) &&										/* incorrect character usage */
 				      read_buff[count] != '(' &&
 				      read_buff[count] != ')' &&
-					  read_buff[count] != '+' &&									/* function to check for operators? */
+					  read_buff[count] != '+' &&										/* function to check for operators? */
 					  read_buff[count] != '-' &&
 					  read_buff[count] != '*' &&
 					  read_buff[count] != '/' &&
 					  read_buff[count] != '=' &&
 					  read_buff[count] != ';')									
-				{
-					fprintf(stderr, "\nerror: unrecognized token\n");
-					fflush(stderr);
-					exit(1);
-				}
+					unrecognized_token();
 
 				return 12;
 			}		   

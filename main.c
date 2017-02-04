@@ -1,28 +1,21 @@
 /* vonbwd14, Will von Behren
    main.c   */
-   
-#include "token_production.h"
+
+#include "token_production.h" 
+#include "error_handling.h"
 
 int main(int argc, char ** argv)
 {
-   FILE * ifp;                                                          /* input file pointer */
-	token holder;                                                        /* take in token for each iteration */
+   FILE * ifp;                                       /* input file pointer */
+	token holder;                                     /* take in token for each iteration */
 
-   if(argc != 2)                       											/* error check for file arguments */
-   {	
-      fprintf(stderr, "usage: name file\n"); 
-      fflush(stderr);
-      exit(1);
-   }
+   if(argc != 2)                       				  /* error check for file arguments */
+      arg_incorrect();
 
-   ifp = fopen(argv[1], "r");                                           /* open file */
+   ifp = fopen(argv[1], "r");                        /* open file */
 
-   if(ifp == NULL)                                                      /* error check for opening file */
-   {
-      fprintf(stderr, "\nerror: file does not exist\n");                /* error check for nonexistent file */
-      fflush(stderr);
-      exit(1);
-   }
+   if(ifp == NULL)                                   /* error check for opening file */
+      file_nonexist();
 
    do
    {
@@ -78,7 +71,7 @@ int main(int argc, char ** argv)
             fflush(stdout);
             break;
          case 13:
-            fprintf(stdout, "nomore ");
+            fprintf(stdout, "nomore\n");
             fflush(stdout);
             break;
       }
