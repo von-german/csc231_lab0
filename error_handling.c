@@ -1,3 +1,6 @@
+/* vonbwd14, Will von Behren
+   error_handling.c */
+
 #include "error_handling.h"
 #include "token_production.h"
 

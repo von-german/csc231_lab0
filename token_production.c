@@ -44,11 +44,7 @@ token tokenizer(FILE * ifp)
 							read_buff[count] = fgetc(ifp);
 						
 							if(read_buff[count] == ' ')
-							{
-								count++;
-								read_buff[count] = fgetc(ifp);
 								return 10;
-							}
 							else
 							{
 								fseek(ifp, -1, SEEK_CUR);
@@ -335,7 +331,7 @@ token tokenizer(FILE * ifp)
 				break;
 
 			case '/':																	/* case '/' */
-				return 4;
+				return 6;
 				break;
 
 			case '=':																	/* case '=' */
