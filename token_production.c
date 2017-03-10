@@ -123,9 +123,9 @@ token tokenizer(FILE * ifp)
 		   		else
 		   			buffer_overflow();
 
-				if(read_buff[count] == '.' && decimal_used)								/* decimal error check */
+				if(read_buff[count] == '.' && decimal_used)							/* decimal error check */
 		   			multiple_decimals();
-		   		else if(read_buff[count] == '.')										/* first decimal - allowed */
+		   		else if(read_buff[count] == '.')									/* first decimal - allowed */
 			   	{
 			   		decimal_used = 1;
 				   	if(count < 256)
@@ -136,15 +136,15 @@ token tokenizer(FILE * ifp)
 			   		else
 			   			buffer_overflow();
 			   		
-			   		if(read_buff[count] == '.')											/* decimal error check */
+			   		if(read_buff[count] == '.')										/* decimal error check */
 			   			multiple_decimals();
 			   	}
 		    }
 		    
-		    if(!isspace(read_buff[count]) &&											/* incorrect character usage */
+		    if(!isspace(read_buff[count]) &&										/* incorrect character usage */
 				  read_buff[count] != '(' &&
 				  read_buff[count] != ')' &&
-				  read_buff[count] != '+' &&											/* function to check for operators? */
+				  read_buff[count] != '+' &&										/* function to check for operators? */
 				  read_buff[count] != '-' &&
 				  read_buff[count] != '*' &&
 				  read_buff[count] != '/' &&
@@ -158,6 +158,48 @@ token tokenizer(FILE * ifp)
 		}
 		else switch(read_buff[count])
 		{
+			case '.':																/* case '.' */
+				
+			if(count < 256)
+		   	{
+		   		count++;
+		   		read_buff[count] = fgetc(ifp);
+		   	}
+		   	else
+		   		buffer_overflow();
+
+			if(read_buff[count] == '.')												/* decimal error check */
+				multiple_decimals();
+						   
+			while(isdigit(read_buff[count]))										/* continue reading digits */
+			{
+				if(count < 256)
+				{
+			   		count++;
+		   			read_buff[count] = fgetc(ifp);
+			  	}
+				else
+					buffer_overflow();
+
+				if(read_buff[count] == '.')											/* decimal error check */
+					multiple_decimals();
+			}
+					
+			if(!isspace(read_buff[count]) &&										/* incorrect character usage */
+			      read_buff[count] != '(' &&
+			      read_buff[count] != ')' &&
+				  read_buff[count] != '+' &&										/* function to check for operators? */
+				  read_buff[count] != '-' &&
+				  read_buff[count] != '*' &&
+				  read_buff[count] != '/' &&
+				  read_buff[count] != '=' &&
+				  read_buff[count] != ';')									
+				unrecognized_token();
+			
+				return 12;	   
+				break;
+
+
 			case '-':																	/* case '-' */
 
 	   		count++;
@@ -246,9 +288,7 @@ token tokenizer(FILE * ifp)
 			}
 
 			if(read_buff[count] == '.')										
-			{
-				decimal_used = 1;
-					
+			{		
 				if(count < 256)
 		   		{
 		   			count++;
@@ -270,23 +310,8 @@ token tokenizer(FILE * ifp)
 			 		else
 				  		buffer_overflow();
 
-					if(read_buff[count] == '.' && decimal_used)							/* decimal error check */
+					if(read_buff[count] == '.')											/* decimal error check */
 						multiple_decimals();
-					else if(read_buff[count] == '.')									/* first decimal - allowed */
-					{
-						decimal_used = 1;
-						
-						if(count < 256)
-				   		{
-				   			count++;
-				   			read_buff[count] = fgetc(ifp);
-				   		}
-				   		else
-				   			buffer_overflow();
-
-						if(read_buff[count] == '.')										/* decimal error check */
-							multiple_decimals();
-					}
 				}
 					
 				if(!isspace(read_buff[count]) &&										/* incorrect character usage */
@@ -299,7 +324,6 @@ token tokenizer(FILE * ifp)
 					  read_buff[count] != '=' &&
 					  read_buff[count] != ';')									
 					unrecognized_token();
-
 				return 12;
 			}		   
 				break;
@@ -343,8 +367,9 @@ token tokenizer(FILE * ifp)
 				break;
 		} /* end switch */
 
-		count = 0;
-		read_buff[count] = fgetc(ifp);
+		if(!isspace(read_buff[count]) || read_buff[count] != EOF)
+			unrecognized_token();
+
 	}   /* end while */
 
 	return 13;
