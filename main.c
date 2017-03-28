@@ -3,11 +3,14 @@
 
 #include "token_production.h" 
 #include "error_handling.h"
+#include "print_aux.h"
 
 int main(int argc, char ** argv)
 {
    FILE * ifp;                                       /* input file pointer */
-	token holder;                                     /* take in token for each iteration */
+	token cur_tok;                                    /* take in token for each iteration */
+   token tok_list[BUFF_SIZE];                        /* list of tokens */
+   int list_size;                                    /* list count */
 
    if(argc != 2)                       				  /* error check for file arguments */
       arg_incorrect();
@@ -17,65 +20,22 @@ int main(int argc, char ** argv)
    if(ifp == NULL)                                   /* error check for opening file */
       file_nonexist();
 
+   list_size = 0;
+
    do
    {
-      holder = tokenizer(ifp);
-      switch (holder)
-      {
-         case 1:
-            fprintf(stdout, "lparen ");
-            fflush(stdout);
-            break;
-         case 2:
-            fprintf(stdout, "rparen ");
-            fflush(stdout);
-            break;
-         case 3:
-            fprintf(stdout, "add ");
-            fflush(stdout);
-            break;
-         case 4:
-            fprintf(stdout, "subtract ");
-            fflush(stdout);
-            break;
-         case 5:
-            fprintf(stdout, "multiply ");
-            fflush(stdout);
-            break;
-         case 6:
-            fprintf(stdout, "divide ");
-            fflush(stdout);
-            break;
-         case 7:
-            fprintf(stdout, "exponent ");
-            fflush(stdout);
-            break;
-         case 8:
-            fprintf(stdout, "assign ");
-            fflush(stdout);
-            break;
-         case 9:
-            fprintf(stdout, "semi ");
-            fflush(stdout);
-            break;
-         case 10:
-            fprintf(stdout, "output ");
-            fflush(stdout);
-            break;
-         case 11:
-            fprintf(stdout, "id ");
-            fflush(stdout);
-            break;
-         case 12:
-            fprintf(stdout, "number ");
-            fflush(stdout);
-            break;
-         case 13:
-            fprintf(stdout, "nomore\n");
-            fflush(stdout);
-            break;
+      cur_tok = tokenizer(ifp);
+      if(list_size < 256)
+      { 
+         tok_list[list_size] = cur_tok;
+         list_size++;
       }
-   }while(holder != 13);
+      else
+         buffer_overflow();
+
+      print_token(cur_tok);
+
+   } while(cur_tok != 13);
 
    fclose(ifp);
 

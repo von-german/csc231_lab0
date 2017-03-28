@@ -3,10 +3,10 @@
 
 all: lexer
 
-lexer: main.o token_production.o error_handling.o
-	gcc main.o token_production.o error_handling.o -o lexer
+lexer: main.o token_production.o error_handling.o print_aux.o
+	gcc main.o token_production.o error_handling.o print_aux.o -o lexer
 
-main.o: main.c token_production.h error_handling.h
+main.o: main.c token_production.h error_handling.h print_aux.h
 	gcc -Wall -pedantic -c main.c
 
 token_production.o: token_production.c token_production.h error_handling.h
@@ -14,6 +14,9 @@ token_production.o: token_production.c token_production.h error_handling.h
 
 error_handling.o: error_handling.c error_handling.h token_production.h
 	gcc -Wall -pedantic -c error_handling.c
+
+print_aux.o: print_aux.c print_aux.h error_handling.h token_production.h
+	gcc -Wall -pedantic -c print_aux.c
 
 
 clean: 
