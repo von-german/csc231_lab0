@@ -1,0 +1,4 @@
+xabc = 3.141592 ;
+y = -2.0 ;
+z = xabc * y - 1 ;
+print z ;

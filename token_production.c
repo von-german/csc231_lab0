@@ -367,7 +367,7 @@ token tokenizer(FILE * ifp)
 				break;
 		} /* end switch */
 
-		if(!isspace(read_buff[count]) || read_buff[count] != EOF)
+		if(!isspace(read_buff[count]) && read_buff[count] != EOF)
 			unrecognized_token();
 
 	}   /* end while */
